@@ -17,6 +17,10 @@
     
 
     <b>{{ message.fromName }}</b><br>
+    <div *ngIf="trackSnapshot | async as snap">
+      File size: {{ snap.totalBytes | formatFileSize }} 
+      Data transfered: {{ snap.bytesTransferred | formatFileSize }}
+    </div> 
     <span>{{ message.msg }}
     </span>
     <div class="time ion-text-right"><br>{{ message.createdAt?.toMillis() | date:'short' }}</div>
@@ -30,9 +34,16 @@
 <ion-footer>
   <ion-toolbar color="light">
     <ion-row class="ion-align-items-center">
-      <ion-col size="10">
-        <ion-textarea autoGrow="true" class="message-input" rows="1" maxLength="500" [(ngModel)]="newMsg" >
+      <ion-col size="8">
+        <ion-textarea autoGrow="true" class="message-input" rows="1" maxLength="400" [(ngModel)]="newMsg" >
         </ion-textarea>
+      </ion-col>
+      <ion-col size="2" *ngIf="!isUploading && !isUploaded">
+        <ion-button expand="block" fill="clear" color="primary" [disabled]="newMsg === ''"
+          class="msg-btn">
+          <input type="file" (change)="uploadImage($event.target.files)" />
+          <ion-icon name="attach-outline" slot="icon-only"></ion-icon>
+        </ion-button>
       </ion-col>
       <ion-col size="2">
         <ion-button expand="block" fill="clear" color="primary" [disabled]="newMsg === ''"
