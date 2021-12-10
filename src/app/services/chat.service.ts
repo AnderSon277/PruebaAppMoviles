@@ -135,14 +135,15 @@ export class ChatService {
     this.sendVerificationEmail();
   }
   addChatMessage(msg) {
-    console.log("siiiiiiiiiiiiiiiiiiiiiiiiiiii",this.filesCollection);
+    console.log("siiiiiiiiiii2222222",this.fileUploadTask);
+    console.log("siiiiiiiiiiiiiiiiiiiiiiiiiiii",this.UploadedImageURL)
+    console.log("siiiiSiseeeSizze",this.imgName)
 
-    if( this.UploadedImageURL !== undefined ) {
+    if( this.imgName!== undefined ) {
       return this.afs.collection('messages').add({
         msg,
         from: this.currentUser.uid,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        imagen:this.UploadedImageURL,
       });
       
     } else {
