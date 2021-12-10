@@ -13,7 +13,7 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule),
-    ...canActivate(redirectLoggedInToChat)
+    
   },
   {
     path: 'chat',
@@ -23,6 +23,10 @@ const routes: Routes = [
   {
     path: 'register',
     loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
+  },
+  {
+    path: 'verification-email',
+    loadChildren: () => import('./pages/send-email/send-email.module').then( m => m.SendEmailPageModule),
   },
 ];
 
