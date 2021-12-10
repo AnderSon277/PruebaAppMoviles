@@ -1,4 +1,4 @@
 # PruebaAppMoviles
 -Estructura del proyecto 
-https://raw.githubusercontent.com/AnderSon277/PruebaAppMoviles/master/ImagenesCapturas/Captura1.PNG
+https://github.com/AnderSon277/PruebaAppMoviles/blob/master/ImagenesCapturas/Captura2.PNG
 Este protecto es basado en la tecnologia de Ionic y Angular
