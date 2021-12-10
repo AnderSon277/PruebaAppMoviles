@@ -4,7 +4,8 @@ import { AngularFirestore} from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
-
+import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
+import { AngularFirestoreCollection } from '@angular/fire/firestore';
 
 export interface User {
   uid: string;
@@ -21,6 +22,13 @@ export interface Message {
   myMsg: boolean;
 }
 
+
+export interface imgFile {
+  name: string;
+  filepath: string;
+  size: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -28,11 +36,41 @@ export interface Message {
 export class ChatService {
   currentUser: User = null;
 
-  constructor(public afAuth: AngularFireAuth, private afs: AngularFirestore) {
+  public filesCollection: AngularFirestoreCollection<imgFile>;
+  // File upload task 
+  fileUploadTask: AngularFireUploadTask;
+
+  // Upload progress
+  percentageVal: Observable<number>;
+
+  // Track file uploading with snapshot
+  trackSnapshot: Observable<any>;
+
+  // Uploaded File URL
+  UploadedImageURL: Observable<string>;
+
+  // Uploaded image collection
+  files: Observable<imgFile[]>;
+
+  // Image specifications
+  imgName: string;
+  imgSize: number;
+
+  // File uploading status
+  isFileUploading: boolean;
+  isFileUploaded: boolean;
+
+  constructor(public afAuth: AngularFireAuth, public afs: AngularFirestore, public afStorage: AngularFireStorage, ) {
     this.afAuth.onAuthStateChanged(user => {
       console.log('User: ', user.providerData[0].uid);
       this.currentUser = user;
     });
+    this.isFileUploading = false;
+    this.isFileUploaded = false;
+    
+    // Define uploaded files collection
+    this.filesCollection = afs.collection<imgFile>('imagesCollection');
+    this.files = this.filesCollection.valueChanges();
   }
   
 /*
@@ -96,13 +134,24 @@ export class ChatService {
     );
     this.sendVerificationEmail();
   }
-
   addChatMessage(msg) {
-    return this.afs.collection('messages').add({
-      msg,
-      from: this.currentUser.uid,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    console.log("siiiiiiiiiiiiiiiiiiiiiiiiiiii",this.filesCollection);
+
+    if( this.UploadedImageURL !== undefined ) {
+      return this.afs.collection('messages').add({
+        msg,
+        from: this.currentUser.uid,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        imagen:this.UploadedImageURL,
+      });
+      
+    } else {
+      return this.afs.collection('messages').add({
+        msg,
+        from: this.currentUser.uid,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(), 
+      });
+    }
   }
 
   getChatMessages() {
