@@ -67,12 +67,15 @@ export class LoginPage implements OnInit {
         }
       )
   }
- 
-  
 
   register(){
     this.router.navigateByUrl('/register', { replaceUrl: true });
   }
+
+  forgotPassword(){
+    this.router.navigateByUrl('/forgot-password', { replaceUrl: true });
+  }
+  
  // Easy access for form fields
   get email() {
     return this.credentialForm.get('email');

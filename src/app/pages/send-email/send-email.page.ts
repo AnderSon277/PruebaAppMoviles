@@ -12,18 +12,18 @@ import { User } from '../../services/chat.service';
 })
 
 export class SendEmailPage implements OnDestroy {
-  public user$: Observable<User> = this.authSvc.afAuth.user;
+  public user$: Observable<User> = this.chatService.afAuth.user;
 
   constructor(
     private router: Router,
-    private authSvc: ChatService) {}
+    private chatService: ChatService) {}
 
   onSendEmail(): void {
-    this.authSvc.sendVerificationEmail();
+    this.chatService.sendVerificationEmail();
   }
 
   ngOnDestroy() {
-    this.authSvc.logout();
+    this.chatService.logout();
     this.router.navigateByUrl('/', { replaceUrl: true });
   }
 }
