@@ -16,7 +16,7 @@ export class LoginPage implements OnInit {
     private router: Router,
     private alertController: AlertController,
     private loadingController: LoadingController,
-    private chatService: ChatService) { }
+    private chatService: ChatService ){}
 
   ngOnInit() {
     this.credentialForm = this.fb.group({
@@ -47,13 +47,13 @@ export class LoginPage implements OnInit {
   async login() {
     const loading = await this.loadingController.create();
     await loading.present();
- 
     this.chatService
       .login(this.credentialForm.value)
       .then(
-        (res) => {
+        async (res) => {
           loading.dismiss();
-          this.router.navigateByUrl('/chat', { replaceUrl: true });
+          const user = await this.chatService.login(this.credentialForm.value);
+          this.checkUserIsVerified(user.user);
         },
         async (err) => {
           loading.dismiss();
@@ -65,12 +65,17 @@ export class LoginPage implements OnInit {
  
           await alert.present();
         }
-      );
+      )
   }
- 
+
   register(){
     this.router.navigateByUrl('/register', { replaceUrl: true });
   }
+
+  forgotPassword(){
+    this.router.navigateByUrl('/forgot-password', { replaceUrl: true });
+  }
+  
  // Easy access for form fields
   get email() {
     return this.credentialForm.get('email');
@@ -80,4 +85,13 @@ export class LoginPage implements OnInit {
     return this.credentialForm.get('password');
   }
 
+  private checkUserIsVerified(user) {
+    if (user && user.emailVerified) {
+      this.router.navigateByUrl('/chat', { replaceUrl: true });
+    } else if (user){
+      this.router.navigateByUrl('/verification-email', { replaceUrl: true });
+    } else{
+      this.router.navigateByUrl('/', { replaceUrl: true });
+    }
+  }
 }

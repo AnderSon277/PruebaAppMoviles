@@ -17,7 +17,7 @@
     </ion-item>
     <div *ngIf="(email.dirty || email.touched) && email.errors" class="errors">
       <span *ngIf="email.errors?.required">Campo requerido</span>
-      <span *ngIf="email.errors?.email">El correo es incorrecto</span>
+      <span *ngIf="email.errors?.email">El correo no es válido</span>
     </div>
 
     <ion-item>
@@ -40,6 +40,11 @@
   <ion-item>
     <ion-label> ¿No tienes cuenta? </ion-label>
     <ion-button (click)="register()" fill="outline" color="secondary">Registrarse</ion-button>
+  </ion-item>
+
+  <ion-item>
+    <ion-label> ¿Has olvidad tu contraseña? </ion-label>
+    <ion-button (click)="forgotPassword()" fill="outline" color="secondary">Clik Aquí</ion-button>
   </ion-item>
 
 </ion-content>

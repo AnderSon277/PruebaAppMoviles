@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AngularFirestore} from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 
+
 export interface User {
   uid: string;
   email: string;
+  emailVerified:boolean,
 }
 
 export interface Message {
@@ -22,16 +24,16 @@ export interface Message {
 @Injectable({
   providedIn: 'root'
 })
+
 export class ChatService {
   currentUser: User = null;
 
-  constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore) {
+  constructor(public afAuth: AngularFireAuth, private afs: AngularFirestore) {
     this.afAuth.onAuthStateChanged(user => {
-      console.log('Changed: ', user);
+      console.log('User: ', user.providerData[0].uid);
       this.currentUser = user;
     });
   }
-
   
 /*
   async signUp({ email, password }) {
@@ -59,6 +61,18 @@ export class ChatService {
     return this.afAuth.signOut();
   }*/
 
+  async sendVerificationEmail(): Promise<void> {
+    return (await this.afAuth.currentUser).sendEmailVerification();
+  }
+
+  async resetPassword(email: string): Promise<void> {
+    try {
+      return this.afAuth.sendPasswordResetEmail(email);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
   async login({ email, password }) {
     try{
       const credential = await this.afAuth.signInWithEmailAndPassword(
@@ -80,6 +94,7 @@ export class ChatService {
       email,
       password
     );
+    this.sendVerificationEmail();
   }
 
   addChatMessage(msg) {
@@ -122,5 +137,6 @@ export class ChatService {
     }
     return 'User';
   }
+
 
 }

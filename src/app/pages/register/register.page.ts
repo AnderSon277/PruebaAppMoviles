@@ -31,7 +31,7 @@ export class RegisterPage implements OnInit {
 
     this.chatService.register(this.credentialForm.value).then(user => {
       loading.dismiss();
-      this.router.navigateByUrl('/chat', { replaceUrl: true });
+      this.router.navigateByUrl('/verification-email', { replaceUrl: true });
     }, async err => {
       loading.dismiss();
       const alert = await this.alertController.create({
